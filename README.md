@@ -23,3 +23,12 @@ Useful references
 [2]: http://thingsaaronmade.com/blog/a-quick-intro-to-writing-a-parser-using-treetop.html
 [3]: http://stackoverflow.com/questions/30360633/treetop-grammar-line-continuation
 [4]: http://po-ru.com/diary/getting-started-with-treetop/
+
+Running
+-------
+
+To run the parsing script:
+
+```bash
+ruby parse_address.rb
+```
