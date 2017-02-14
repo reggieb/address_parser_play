@@ -1,0 +1,120 @@
+
+grammar AddressGrammar
+
+  rule address
+    flat? street_element extra_streets? town county_postcode? <AddressNode>
+  end
+
+  rule county_postcode
+    (county postcode) / (postcode county) / county / postcode
+  end
+
+  rule street_element
+    street_with_number / number_building_street / building_street / street_without_known_ending
+  end
+
+  rule street_with_number
+    building_number street
+  end
+
+  rule street
+    (word !street_ending)* (word &street_ending) street_ending <StreetNode>
+  end
+
+  rule number_building_street
+    building_number element_separator? building_street
+  end
+
+  rule building_street
+    building element_separator street
+  end
+
+  rule street_without_known_ending
+    ((building_number / building / (building_number element_separator? building)) !street) word+ <StreetNode>
+  end
+
+  rule building
+    word+ <BuildingNode>
+  end
+
+  rule flat
+    'FLAT' space? number element_separator space? <FlatNode>
+  end
+
+  rule town
+    element_separator ((town_text county) / (town_text postcode) / town_text "\n")
+  end
+
+  rule town_text
+    (word)* <TownNode>
+  end
+
+  rule extra_streets
+    street_two? street_three
+  end
+
+  rule street_two
+    (element_separator word &(street_three town county_postcode)) <StreetTwoNode>
+  end
+
+  rule street_three
+    (element_separator word &(town county_postcode)) <StreetThreeNode>
+  end
+
+  rule postcode
+    space_or_element_separator postcode_text
+  end
+
+  rule postcode_text
+    letters number space? number letters <PostcodeNode>
+  end
+
+  rule street_ending
+    space street_endings
+  end
+
+  rule street_endings
+    'ALLEE' / 'ALLEY' / 'ALLY' / 'ALY' / 'ANEX' / 'ANNEX' / 'ANNX' / 'ANX' / 'ARC' / 'ARCADE' / 'AV' / 'AVE' / 'AVEN' / 'AVENU' / 'AVENUE' / 'AVN' / 'AVNUE' / 'BAYOO' / 'BAYOU' / 'BCH' / 'BEACH' / 'BEND' / 'BND' / 'BLF' / 'BLUF' / 'BLUFF' / 'BLUFFS' / 'BOT' / 'BTM' / 'BOTTM' / 'BOTTOM' / 'BLVD' / 'BOUL' / 'BOULEVARD' / 'BOULV' / 'BR' / 'BRNCH' / 'BRANCH' / 'BRDGE' / 'BRG' / 'BRIDGE' / 'BRK' / 'BROOK' / 'BROOKS' / 'BURG' / 'BURGS' / 'BYP' / 'BYPA' / 'BYPAS' / 'BYPASS' / 'BYPS' / 'CAMP' / 'CP' / 'CMP' / 'CANYN' / 'CANYON' / 'CNYN' / 'CAPE' / 'CPE' / 'CAUSEWAY' / 'CAUSWA' / 'CSWY' / 'CEN' / 'CENT' / 'CENTER' / 'CENTR' / 'CENTRE' / 'CNTER' / 'CNTR' / 'CTR' / 'CENTERS' / 'CIR' / 'CIRC' / 'CIRCL' / 'CIRCLE' / 'CRCL' / 'CRCLE' / 'CIRCLES' / 'CLF' / 'CLIFF' / 'CLFS' / 'CLIFFS' / 'CLB' / 'CLUB' / 'COMMON' / 'COMMONS' / 'COR' / 'CORNER' / 'CORNERS' / 'CORS' / 'COURSE' / 'CRSE' / 'COURT' / 'CT' / 'COURTS' / 'CTS' / 'COVE' / 'CV' / 'COVES' / 'CREEK' / 'CRK' / 'CRESCENT' / 'CRES' / 'CRSENT' / 'CRSNT' / 'CREST' / 'CROSSING' / 'CRSSNG' / 'XING' / 'CROSSROAD' / 'CROSSROADS' / 'CURVE' / 'DALE' / 'DL' / 'DAM' / 'DM' / 'DIV' / 'DIVIDE' / 'DV' / 'DVD' / 'DR' / 'DRIV' / 'DRIVE' / 'DRV' / 'DRIVES' / 'EST' / 'ESTATE' / 'ESTATES' / 'ESTS' / 'EXP' / 'EXPR' / 'EXPRESS' / 'EXPRESSWAY' / 'EXPW' / 'EXPY' / 'EXT' / 'EXTENSION' / 'EXTN' / 'EXTNSN' / 'EXTS' / 'FALL' / 'FALLS' / 'FLS' / 'FERRY' / 'FRRY' / 'FRY' / 'FIELD' / 'FLD' / 'FIELDS' / 'FLDS' / 'FLAT' / 'FLT' / 'FLATS' / 'FLTS' / 'FORD' / 'FRD' / 'FORDS' / 'FOREST' / 'FORESTS' / 'FRST' / 'FORG' / 'FORGE' / 'FRG' / 'FORGES' / 'FORK' / 'FRK' / 'FORKS' / 'FRKS' / 'FORT' / 'FRT' / 'FT' / 'FREEWAY' / 'FREEWY' / 'FRWAY' / 'FRWY' / 'FWY' / 'GARDEN' / 'GARDN' / 'GRDEN' / 'GRDN' / 'GARDENS' / 'GDNS' / 'GRDNS' / 'GATEWAY' / 'GATEWY' / 'GATWAY' / 'GTWAY' / 'GTWY' / 'GLEN' / 'GLN' / 'GLENS' / 'GREEN' / 'GRN' / 'GREENS' / 'GROV' / 'GROVE' / 'GRV' / 'GROVES' / 'HARB' / 'HARBOR' / 'HARBR' / 'HBR' / 'HRBOR' / 'HARBORS' / 'HAVEN' / 'HVN' / 'HT' / 'HTS' / 'HIGHWAY' / 'HIGHWY' / 'HIWAY' / 'HIWY' / 'HWAY' / 'HWY' / 'HILL' / 'HL' / 'HILLS' / 'HLS' / 'HLLW' / 'HOLLOW' / 'HOLLOWS' / 'HOLW' / 'HOLWS' / 'INLT' / 'IS' / 'ISLAND' / 'ISLND' / 'ISLANDS' / 'ISLNDS' / 'ISS' / 'ISLE' / 'ISLES' / 'JCT' / 'JCTION' / 'JCTN' / 'JUNCTION' / 'JUNCTN' / 'JUNCTON' / 'JCTNS' / 'JCTS' / 'JUNCTIONS' / 'KEY' / 'KY' / 'KEYS' / 'KYS' / 'KNL' / 'KNOL' / 'KNOLL' / 'KNLS' / 'KNOLLS' / 'LK' / 'LAKE' / 'LKS' / 'LAKES' / 'LAND' / 'LANDING' / 'LNDG' / 'LNDNG' / 'LANE' / 'LN' / 'LGT' / 'LIGHT' / 'LIGHTS' / 'LF' / 'LOAF' / 'LCK' / 'LOCK' / 'LCKS' / 'LOCKS' / 'LDG' / 'LDGE' / 'LODG' / 'LODGE' / 'LOOP' / 'LOOPS' / 'MALL' / 'MNR' / 'MANOR' / 'MANORS' / 'MNRS' / 'MEADOW' / 'MDW' / 'MDWS' / 'MEADOWS' / 'MEDOWS' / 'MEWS' / 'MILL' / 'MILLS' / 'MISSN' / 'MSSN' / 'MOTORWAY' / 'MNT' / 'MT' / 'MOUNT' / 'MNTAIN' / 'MNTN' / 'MOUNTAIN' / 'MOUNTIN' / 'MTIN' / 'MTN' / 'MNTNS' / 'MOUNTAINS' / 'NCK' / 'NECK' / 'ORCH' / 'ORCHARD' / 'ORCHRD' / 'OVAL' / 'OVL' / 'OVERPASS' / 'PARK' / 'PRK' / 'PARKS' / 'PARKWAY' / 'PARKWY' / 'PKWAY' / 'PKWY' / 'PKY' / 'PARKWAYS' / 'PKWYS' / 'PASS' / 'PASSAGE' / 'PATH' / 'PATHS' / 'PIKE' / 'PIKES' / 'PINE' / 'PINES' / 'PNES' / 'PL' / 'PLAIN' / 'PLN' / 'PLAINS' / 'PLNS' / 'PLAZA' / 'PLZ' / 'PLZA' / 'POINT' / 'PT' / 'POINTS' / 'PTS' / 'PORT' / 'PRT' / 'PORTS' / 'PRTS' / 'PR' / 'PRAIRIE' / 'PRR' / 'RAD' / 'RADIAL' / 'RADIEL' / 'RADL' / 'RAMP' / 'RANCH' / 'RANCHES' / 'RNCH' / 'RNCHS' / 'RAPID' / 'RPD' / 'RAPIDS' / 'RPDS' / 'REST' / 'RST' / 'RDG' / 'RDGE' / 'RIDGE' / 'RDGS' / 'RIDGES' / 'RIV' / 'RIVER' / 'RVR' / 'RIVR' / 'RD' / 'ROAD' / 'ROADS' / 'RDS' / 'ROUTE' / 'ROW' / 'RUE' / 'RUN' / 'SHL' / 'SHOAL' / 'SHLS' / 'SHOALS' / 'SHOAR' / 'SHORE' / 'SHR' / 'SHOARS' / 'SHORES' / 'SHRS' / 'SKYWAY' / 'SPG' / 'SPNG' / 'SPRING' / 'SPRNG' / 'SPGS' / 'SPNGS' / 'SPRINGS' / 'SPRNGS' / 'SPUR' / 'SPURS' / 'SQ' / 'SQR' / 'SQRE' / 'SQU' / 'SQUARE' / 'SQRS' / 'SQUARES' / 'STA' / 'STATION' / 'STATN' / 'STN' / 'STRA' / 'STRAV' / 'STRAVEN' / 'STRAVENUE' / 'STRAVN' / 'STRVN' / 'STRVNUE' / 'STREAM' / 'STREME' / 'STRM' / 'STREET' / 'STRT' / 'ST' / 'STR' / 'STREETS' / 'SMT' / 'SUMIT' / 'SUMITT' / 'SUMMIT' / 'TER' / 'TERR' / 'TERRACE' / 'THROUGHWAY' / 'TRACE' / 'TRACES' / 'TRCE' / 'TRACK' / 'TRACKS' / 'TRAK' / 'TRK' / 'TRKS' / 'TRAFFICWAY' / 'TRAIL' / 'TRAILS' / 'TRL' / 'TRLS' / 'TRAILER' / 'TRLR' / 'TRLRS' / 'TUNEL' / 'TUNL' / 'TUNLS' / 'TUNNEL' / 'TUNNELS' / 'TUNNL' / 'TRNPK' / 'TURNPIKE' / 'TURNPK' / 'UNDERPASS' / 'UN' / 'UNION' / 'UNIONS' / 'VALLEY' / 'VALLY' / 'VLLY' / 'VLY' / 'VALLEYS' / 'VLYS' / 'VDCT' / 'VIA' / 'VIADCT' / 'VIADUCT' / 'VIEW' / 'VW' / 'VIEWS' / 'VWS' / 'VILL' / 'VILLAG' / 'VILLAGE' / 'VILLG' / 'VILLIAGE' / 'VLG' / 'VILLAGES' / 'VLGS' / 'VILLE' / 'VL' / 'VIS' / 'VIST' / 'VISTA' / 'VST' / 'VSTA' / 'WALK' / 'WALKS' / 'WALL' / 'WY' / 'WAY' / 'WAYS' / 'WELL' / 'WELLS' / 'WLS' / 'PLACE'
+  end
+
+  rule county
+    space_or_element_separator county_names <CountyNode>
+  end
+
+  rule county_names
+    ('AVON' / 'BEDFORDSHIRE' / 'BERKSHIRE' / 'BORDERS' / 'BUCKINGHAMSHIRE' / 'CAMBRIDGESHIRE' / 'CENTRAL' / 'CHESHIRE' / 'CLEVELAND' / 'CLWYD' / 'CORNWALL' / 'COUNTY' ANTRIM / 'COUNTY' ARMAGH / 'COUNTY' DOWN / 'COUNTY' FERMANAGH / 'COUNTY' LONDONDERRY / 'COUNTY' TYRONE / 'CUMBRIA' / 'DERBYSHIRE' / 'DEVON' / 'DORSET' / 'DUMFRIES' AND GALLOWAY / 'DURHAM' / 'DYFED' / 'EAST' SUSSEX / 'ESSEX' / 'FIFE' / 'GLOUCESTERSHIRE' / 'GRAMPIAN' / 'GREATER' MANCHESTER / 'GWENT' / 'GWYNEDD' COUNTY / 'HAMPSHIRE' / 'HEREFORDSHIRE' / 'HERTFORDSHIRE' / 'HIGHLANDS' AND ISLANDS / 'HUMBERSIDE' / 'ISLE' OF WIGHT / 'KENT' / 'LANCASHIRE' / 'LEICESTERSHIRE' / 'LINCOLNSHIRE' / 'LOTHIAN' / 'MERSEYSIDE' / 'MID' GLAMORGAN / 'NORFOLK' / 'NORTH' YORKSHIRE / 'NORTHAMPTONSHIRE' / 'NORTHUMBERLAND' / 'NOTTINGHAMSHIRE' / 'OXFORDSHIRE' / 'POWYS' / 'RUTLAND' / 'SHROPSHIRE' / 'SOMERSET' / 'SOUTH' GLAMORGAN / 'SOUTH' YORKSHIRE / 'STAFFORDSHIRE' / 'STRATHCLYDE' / 'SUFFOLK' / 'SURREY' / 'TAYSIDE' / 'TYNE' AND WEAR / 'WARWICKSHIRE' / 'WEST' GLAMORGAN / 'WEST' MIDLANDS / 'WEST' SUSSEX / 'WEST' YORKSHIRE / 'WILTSHIRE' / 'WORCESTERSHIRE')
+  end
+
+  rule building_number
+    (number)* <BuildingNumberNode>
+  end
+
+  rule number
+    [0-9]+
+  end
+
+  rule word
+    space ((letters (word_separator &letters))* letters)
+  end
+
+  rule letters
+    [A-Z]+ 
+  end
+
+  rule word_separator
+    [\-\']
+  end
+
+  rule element_separator
+    [\,]+
+  end
+
+  rule space
+    [ \t]?
+  end
+
+  rule space_or_element_separator
+    (element_separator / space)? space?
+  end
+
+end
