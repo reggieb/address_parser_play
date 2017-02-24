@@ -9,10 +9,10 @@ Treetop.load 'address_grammar'
 def process(text, add_detail = false)
   result = @parser.parse(text.upcase)
   if result
-    puts result.text_value
+    # puts text
     p result.attributes if add_detail
   else
-    puts "FAILED:- #{text}"
+    puts "#{text} - FAILED"
   end
 end
 
@@ -33,16 +33,20 @@ process "9, The Towers, Some Road"
 process 'Flat 4, 9 Some Road'
 process "Flat 4, 9 The Towers, Some Road"
 process "Flat 4, 9, The Towers, Some Road"
+process "Flat 4, 9, The Towers, Some Road, Bristol, BS7 8DB"
 process "Flat 4, The Towers, Some Road"
 process "The Towers, Some Road"
 process "9 Evendene"
 process "Flat 4, 9, The Towers, Some Road, Bristol"
-process "9 Some-Other ROAD, Bristol", add_detail
+process "9 Some-Other ROAD, Bristol"
 process "9 Evendene, Bristol"
-process "9 Some-Other ROAD, Bristol, BS7 8DB"
 process "9 Some-Other ROAD, Bristol BS7 8DB"
-process "9 Some-Other ROAD, Bristol, Avon, BS7 8DB", add_detail
+process "9 Some-Other ROAD, Bristol, BS7 8DB"
+process "9 Some-Other ROAD, Bristol, Avon, BS7 8DB"
+process "9 Some-Other ROAD, Bristol, Avon"
+process "9 Some-Other ROAD, Bristol, BS7 8DB, Avon"
 process "9 Some-Other ROAD, Bristol BS7 8DB Avon"
 process "9 Some-Other ROAD, Bristol BS7 8DB, Avon"
 process "185 Some Road, Suburb, Bristol, Avon, BS7 8DB"
+process "185 Some Road, Suburb, Bristol, Avon BS7 8DB", add_detail
 process "185 Some Road, StreetTwo, StreetThree, Bristol, Avon, BS7 8DB", add_detail

@@ -2,11 +2,11 @@
 grammar AddressGrammar
 
   rule address
-    flat? street_element extra_streets? town county_postcode? <AddressNode>
+    flat? street_element extra_streets? town county_postcode <AddressNode>
   end
 
   rule county_postcode
-    (county postcode) / (postcode county) / county / postcode
+    (county postcode) / (postcode county) / county / postcode / end_of_input
   end
 
   rule street_element
@@ -42,7 +42,7 @@ grammar AddressGrammar
   end
 
   rule town
-    element_separator ((town_text county) / (town_text postcode) / town_text "\n")
+    element_separator ((town_text &end_of_input) / (town_text &postcode) / (town_text &county))
   end
 
   rule town_text
@@ -106,7 +106,7 @@ grammar AddressGrammar
   end
 
   rule element_separator
-    [\,]+
+    [\,]
   end
 
   rule space
@@ -114,7 +114,11 @@ grammar AddressGrammar
   end
 
   rule space_or_element_separator
-    (element_separator / space)? space?
+    element_separator? space
   end
+
+  rule end_of_input 
+    !. 
+  end 
 
 end
