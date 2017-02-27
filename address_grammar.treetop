@@ -2,7 +2,7 @@
 grammar AddressGrammar
 
   rule address
-    flat? street_element extra_streets? town county_postcode <AddressNode>
+    flat? street_element extra_streets? town? county_postcode? <AddressNode>
   end
 
   rule county_postcode
@@ -10,11 +10,11 @@ grammar AddressGrammar
   end
 
   rule street_element
-    street_with_number / number_building_street / building_street / street_without_known_ending
+    number_building_street / street_with_number / building_street / street_without_known_ending
   end
 
   rule street_with_number
-    building_number street
+    building_number element_separator? street
   end
 
   rule street
@@ -30,7 +30,11 @@ grammar AddressGrammar
   end
 
   rule street_without_known_ending
-    ((building_number / building / (building_number element_separator? building)) !street) word+ <StreetNode>
+    ((building_number / building / (building_number element_separator? building)) !street) street_without_known_ending_text
+  end
+
+  rule street_without_known_ending_text
+    word+ <StreetNode>
   end
 
   rule building
@@ -38,7 +42,11 @@ grammar AddressGrammar
   end
 
   rule flat
-    'FLAT' space? number element_separator space? <FlatNode>
+    'FLAT' space? flat_number element_separator space? 
+  end
+
+  rule flat_number
+    (number)+ <FlatNode>
   end
 
   rule town
@@ -46,7 +54,11 @@ grammar AddressGrammar
   end
 
   rule town_text
-    (word)* <TownNode>
+    (town_word)+ <TownNode>
+  end
+
+  rule town_word
+    (space !county_names) ((letters (word_separator &letters))* letters)
   end
 
   rule extra_streets
@@ -54,11 +66,11 @@ grammar AddressGrammar
   end
 
   rule street_two
-    (element_separator word &(street_three town county_postcode)) <StreetTwoNode>
+    (element_separator word+ &(street_three town county_postcode)) <StreetTwoNode>
   end
 
   rule street_three
-    (element_separator word &(town county_postcode)) <StreetThreeNode>
+    (element_separator word+ &(town county_postcode)) <StreetThreeNode>
   end
 
   rule postcode
@@ -86,7 +98,7 @@ grammar AddressGrammar
   end
 
   rule building_number
-    (number)* <BuildingNumberNode>
+    (number)+ <BuildingNumberNode>
   end
 
   rule number
